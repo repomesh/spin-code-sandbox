@@ -10,9 +10,9 @@
 // Only the Wasm interpreter backend ships today. To extend it, add a new module
 // that implements `CodeRunner` and declares itself through `Caps`, and export it
 // below. The core contract (`CodeRunner`, `RunOpts`, `Result`, `Caps`) is
-// backend-neutral.
+// backend-neutral. Agent tools live in "@spinframework/sandbox/tools" so that only
+// apps that use them need the optional `zod` peer dependency.
 
 export * from "./core/index.ts";
 export { Interpreter, InterpreterKV, type BoundRunOpts, type InterpreterOptions } from "./interpreter/index.ts";
 export { KvCodeStore, serveStoredCode, type KvCodeStoreOptions } from "./store/index.ts";
-export { interpreterTool, toAnthropicTool, toOpenAITool, type InterpreterToolOptions, type ToolDefinition } from "./tools.ts";

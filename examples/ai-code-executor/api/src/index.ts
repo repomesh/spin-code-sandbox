@@ -13,14 +13,12 @@ import type { Context } from "hono";
 import * as variables from "@spinframework/spin-variables";
 import { createProvider } from "#llm-provider";
 
-import { Interpreter, type Language } from "@spinframework/sandbox/interpreter";
-import type { HttpInput, RunOpts } from "@spinframework/sandbox/core";
-import { interpreterTool } from "@spinframework/sandbox/tools";
+import { Interpreter } from "@spinframework/sandbox/interpreter";
+import { interpreterTool, toToolDefinition, type ExecutionPolicy } from "@spinframework/sandbox/tools";
 import { historyFor, type History, type ToolResult } from "./llm/types";
 import { log, initLogger } from "./logger";
 
-const INTERPRETER_TOOL = interpreterTool();
-const EXECUTION_POLICY: Pick<RunOpts, "allowedHosts" | "kvEnabled"> = {
+const EXECUTION_POLICY: ExecutionPolicy = {
   allowedHosts: [],
   kvEnabled: false,
 };
@@ -58,14 +56,6 @@ function clip(s: string, n: number): string {
   return s.length > n ? s.slice(0, n) + "…" : s;
 }
 
-function formatToolResult(stdout: string, stderr: string, error: string | null): string {
-  const parts: string[] = [];
-  if (stdout) parts.push("stdout:\n" + stdout);
-  if (stderr) parts.push("stderr:\n" + stderr);
-  if (error) parts.push("error: " + error);
-  return parts.join("\n\n") || "(no output)";
-}
-
 // Runs the agentic loop, emitting each step as soon as it is available so the UI
 // can render turn by turn (the code the moment the model writes it, then the
 // output the moment the sandbox returns) instead of waiting for the whole
@@ -77,13 +67,18 @@ async function runAgent(prompt: string, history: unknown, emit: Emit): Promise<v
   const pyUrl = variables.get("py_interpreter_url") ?? "http://py-sandbox.spin.internal";
   const bundlerUrl = variables.get("bundler_url") ?? "http://bundler.spin.internal";
 
-  // The interpreter is two private, service-chained components, one per language, so pick
-  // the client by the language the model chose. The JS interpreter also knows the bundler, so
-  // model code can pull extra npm dependencies (see the tool's `dependencies` field).
-  const interpreters: Record<Language, Interpreter> = {
-    javascript: Interpreter.javascript({ baseUrl: tsUrl, bundlerUrl }),
-    python: Interpreter.python({ baseUrl: pyUrl }),
-  };
+  // The interpreter is two private, service-chained components, one per language; the tool
+  // routes each call by the language the model chose. The JS interpreter also knows the
+  // bundler, so model code can pull extra npm dependencies (the tool's `dependencies` field).
+  // The policy is the application's; the strict schema stops the model from setting it.
+  const sandbox = interpreterTool({
+    interpreters: {
+      javascript: Interpreter.javascript({ baseUrl: tsUrl, bundlerUrl }),
+      python: Interpreter.python({ baseUrl: pyUrl }),
+    },
+    policy: { ...EXECUTION_POLICY, identity: sandboxId },
+  });
+  const tools = [toToolDefinition(sandbox)];
 
   log.info(`chat: provider=${llm.name} model=${llm.model} prompt=${JSON.stringify(clip(prompt, 80))}`);
 
@@ -101,7 +96,7 @@ async function runAgent(prompt: string, history: unknown, emit: Emit): Promise<v
     // produced, instead of arriving in one buffered blob at the end of the turn.
     const res = await llm.turn(
       messages,
-      { system: systemPrompt(), tools: [INTERPRETER_TOOL], maxTokens: 4096 },
+      { system: systemPrompt(), tools, maxTokens: 4096 },
       { onText: (block, text) => emit({ t: "text_delta", block: `${turn}-${block}`, text }) },
     );
     const genMs = Date.now() - genStart;
@@ -109,21 +104,13 @@ async function runAgent(prompt: string, history: unknown, emit: Emit): Promise<v
 
     const toolResults: ToolResult[] = [];
     for (const call of res.toolCalls) {
-      const input = call.input as {
-        language: Language;
-        code: string;
-        dependencies?: Record<string, string>;
-        input?: HttpInput;
-      };
-      if (!input || typeof input !== "object" || Array.isArray(input) ||
-          Object.keys(input).some((key) => !Object.prototype.hasOwnProperty.call(INTERPRETER_TOOL.inputSchema.properties, key))) {
-        toolResults.push({ id: call.id, content: "error: unsupported tool arguments; execution permissions are controlled by the application", isError: true });
+      // Invalid arguments (including any attempt to set policy) go back to the model, naming the field.
+      const parsed = sandbox.parse(call.input);
+      if (!parsed.ok) {
+        toolResults.push({ id: call.id, ...parsed.output });
         continue;
       }
-      if ((input.language !== "python" && input.language !== "javascript") || typeof input.code !== "string") {
-        toolResults.push({ id: call.id, content: "error: arguments must include language (python|javascript) and code", isError: true });
-        continue;
-      }
+      const input = parsed.args;
       const id = toolId++;
 
       // Stream the code, requested packages, and application-approved hosts before execution.
@@ -137,41 +124,18 @@ async function runAgent(prompt: string, history: unknown, emit: Emit): Promise<v
         genMs,
       });
 
-      let stdout = "";
-      let stderr = "";
-      let error: string | null = null;
-      let execMs = 0;
-      try {
-        const t = Date.now();
-        const runOpts = {
-          ...EXECUTION_POLICY,
-          identity: sandboxId,
-          packageJson:
-            input.language === "javascript" && input.dependencies && Object.keys(input.dependencies).length
-              ? { dependencies: input.dependencies }
-              : undefined,
-        };
-        if (input.input) {
-          const response = await interpreters[input.language].runHandler(input.code, input.input, runOpts);
-          stdout = `HTTP ${response.status}\n${await response.text()}`;
-        } else {
-          const r = await interpreters[input.language].execute(input.code, runOpts);
-          stdout = r.stdout;
-          stderr = r.stderr;
-          error = r.error ? `${r.error.name}: ${r.error.value}` : null;
-        }
-        execMs = Date.now() - t;
-      } catch (e: any) {
-        error = `sandbox error: ${String(e?.message ?? e)}`;
-      }
+      const t = Date.now();
+      const { content, isError, stdout, stderr, error, status } = await sandbox.run(input);
+      const execMs = Date.now() - t;
       log.info(
         `execute: sandbox=wasm_interpreter lang=${input.language} exec=${execMs}ms ` +
         `${error ? "error=" + JSON.stringify(error) : "ok"} stdout=${stdout.length}b`,
       );
 
       // Stream the output the moment the sandbox returns.
-      emit({ t: "tool_end", id, execMs, stdout, stderr, error });
-      toolResults.push({ id: call.id, content: formatToolResult(stdout, stderr, error), isError: error !== null });
+      const shown = status === undefined ? stdout : `HTTP ${status}\n${stdout}`;
+      emit({ t: "tool_end", id, execMs, stdout: shown, stderr, error });
+      toolResults.push({ id: call.id, content, isError });
     }
 
     if (res.toolCalls.length === 0) {

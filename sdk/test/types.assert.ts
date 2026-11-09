@@ -32,3 +32,25 @@ itp.exec(["echo", "hi"]);
 
 // But the interpreter DOES have its scoped-KV power surface.
 void itp.kv("ns");
+
+// The tool's languages and input type come from the interpreters it is given.
+import { interpreterTool, type InterpreterToolInput } from "../src/tools.ts";
+const both = interpreterTool({ interpreters: { python: itp, javascript: itp } });
+const parsed: InterpreterToolInput = both.inputSchema.parse({});
+const lang: "python" | "javascript" = parsed.language;
+void lang;
+const deps: Record<string, string> | undefined = parsed.dependencies;
+void deps;
+// @ts-expect-error execution policy is not a tool argument
+void parsed.allowedHosts;
+const pyOnly = interpreterTool({ interpreters: { python: itp } });
+// @ts-expect-error language is inferred as "python" from the interpreters given
+const notPy: "javascript" = pyOnly.inputSchema.parse({}).language;
+void notPy;
+// @ts-expect-error a Python-only tool cannot run JavaScript
+void pyOnly.run({ language: "javascript", code: "" });
+// @ts-expect-error a policy cannot smuggle in run options such as packageJson
+void both.withPolicy({ packageJson: {} });
+// withPolicy keeps the tool's languages.
+const pyAgain: "python" = pyOnly.withPolicy({ identity: "s" }).inputSchema.parse({}).language;
+void pyAgain;
