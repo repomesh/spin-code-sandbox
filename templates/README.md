@@ -32,7 +32,7 @@ npm" capability is isolated from the "run untrusted code" capability.
 spin templates install --dir . --upgrade
 
 # or straight from git
-spin templates install --git https://github.com/fermyon/spin-sandboxes --upgrade
+spin templates install --git https://github.com/spinframework/spin-code-sandbox --upgrade
 ```
 
 ## Use
@@ -82,17 +82,19 @@ await py.run(code, { lang: "python" }); // application-owned policy, see sdk/REA
 2. Point the templates at the new release (fills in real `sha256` digests):
 
    ```bash
-   scripts/update-template-refs.sh vX.Y.Z            # uses fermyon/spin-sandboxes
+   scripts/update-template-refs.sh vX.Y.Z            # uses spinframework/spin-code-sandbox
    scripts/update-template-refs.sh vX.Y.Z myorg/repo # or specify your fork
    git diff templates/                               # review, then commit
    ```
 
-## Placeholders to set before first release
+## Current release pin
 
-The templates ship with placeholder digests (`sha256:0000…0000`) and point at a `v0.1.0`
-release of `fermyon/spin-sandboxes`. `update-template-refs.sh` fills in the real
-digests after the first release; until then, `spin up` on a generated app fails digest
-verification. Forks pass their own `owner/repo` to the script.
+Until the first versioned release, the templates point at the rolling `canary`
+prerelease of `spinframework/spin-code-sandbox`. Every Release workflow run rebuilds the
+`canary` assets, which changes their digests, so `spin up` on a generated app fails
+digest verification until you re-run `scripts/update-template-refs.sh canary`. Once a
+`vX.Y.Z` tag exists, pin the templates to it instead; versioned assets never change.
+Forks pass their own `owner/repo` to the script.
 
 The prebuilt `wasm32-wasi` Python packages are committed in `py-sandbox/wasi-deps`, so
 the CI and release workflows need no extra repo, submodule, or secret.

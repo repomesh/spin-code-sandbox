@@ -15,7 +15,7 @@ const py = new Interpreter({ baseUrl: "http://py-sandbox.spin.internal" });
 await py.run("print(6 * 7)", { lang: "python" });
 ```
 
-See [examples/ai-code-executor](https://github.com/fermyon/spin-sandboxes/tree/main/examples/ai-code-executor) for a complete caller. Set `allowedHosts`, `kvEnabled`, and `identity` from application code, never from model output.
+See [examples/ai-code-executor](https://github.com/spinframework/spin-code-sandbox/tree/main/examples/ai-code-executor) for a complete caller. Set `allowedHosts`, `kvEnabled`, and `identity` from application code, never from model output.
 
 ## Security model
 
@@ -23,4 +23,4 @@ The trust boundary is the Wasm component (no filesystem; egress gated by Spin). 
 
 Each component's `allowed_outbound_hosts` in `spin.toml` starts empty, so user code cannot make outbound requests. Add the hosts it may reach there (for example `["https://api.example.com"]`); a request's `allowedHosts` can then only narrow that list.
 
-To modify or rebuild the components, see [spin-sandboxes](https://github.com/fermyon/spin-sandboxes).
+To modify or rebuild the components, see [spin-code-sandbox](https://github.com/spinframework/spin-code-sandbox).
