@@ -187,7 +187,7 @@ permission, so only trusted components should be granted access.
   console.log(await response.text());
   ```
 
-  See [`examples/ai-code-executor`](../examples/ai-code-executor). (A single combined app that routes both `/ts` and `/py` by path also works; then one `baseUrl` at the app suffices.)
+  See [`examples/ai-code-executor`](https://github.com/spinframework/spin-code-sandbox/tree/main/examples/ai-code-executor). (A single combined app that routes both `/ts` and `/py` by path also works; then one `baseUrl` at the app suffices.)
 
 ## Extending it
 
@@ -206,6 +206,7 @@ npm install
 npm run typecheck    # tsc, incl. the compile-time contract assertions in test/types.assert.ts
 npm test             # node --test (runs the .ts tests directly)
 npm run check        # both
+npm run build        # compile src/ to dist/ (JavaScript + declarations); also runs on npm pack/publish
 ```
 
 `npm test` runs the TypeScript tests through Node's built-in runner with no build step, so it needs Node 24+ (native type stripping, plus `--test` glob support).
