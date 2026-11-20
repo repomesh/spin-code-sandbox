@@ -10,7 +10,7 @@ Five components; only `ui` and `api` have public routes.
 - **`api/`** (public `/api/...`): a Hono component (TypeScript to Wasm via esbuild +
   `j2w`). It runs the agent loop in [`api/src/index.ts`](api/src/index.ts): one tool
   (`run_in_wasm_interpreter`), the system prompt, and the streaming NDJSON protocol. It
-  depends on the sandbox client [`@spinframework/sandbox`](../../sdk) (a local `file:`
+  depends on the sandbox client [`@spinframework/spin-code-sandbox`](../../sdk) (a local `file:`
   dependency in [`api/package.json`](api/package.json)) and holds one `Interpreter` per
   language, each pointed at a private interpreter component's `spin.internal` URL.
 - **`ui/`** (public `/...`): a Nuxt SPA served by the Spin static fileserver. Adapted

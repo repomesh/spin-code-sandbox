@@ -13,7 +13,7 @@ description = "{{project-description}}"
 
 # Both components are PRIVATE (no public route): they run untrusted code and are reachable
 # only via service chaining from another component in this app. Add your own component that
-# drives them through @spinframework/sandbox (see examples/ai-code-executor) and list
+# drives them through @spinframework/spin-code-sandbox (see examples/ai-code-executor) and list
 # "http://ts-sandbox.spin.internal" / "http://py-sandbox.spin.internal" in its
 # `allowed_outbound_hosts`.
 

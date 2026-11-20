@@ -10,7 +10,7 @@ description = "{{project-description}}"
 
 # PRIVATE component: it runs untrusted code, so it has no public route and is reachable
 # only from other components in this app via service chaining. Add your own component that
-# drives it through @spinframework/sandbox (see examples/ai-code-executor):
+# drives it through @spinframework/spin-code-sandbox (see examples/ai-code-executor):
 #
 #   const py = new Interpreter({ baseUrl: "http://{{project-name | kebab_case}}.spin.internal" });
 #

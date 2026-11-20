@@ -2,7 +2,7 @@
 
 Run untrusted JavaScript/TypeScript and Python in isolated WebAssembly components on
 [Spin](https://spinframework.dev). This repository includes the sandboxes, an npm
-[bundler](packages/typescript/bundler), the [`@spinframework/sandbox`](sdk) client,
+[bundler](packages/typescript/bundler), the [`@spinframework/spin-code-sandbox`](sdk) client,
 and [examples](examples).
 
 ## What this repository contains
@@ -142,7 +142,7 @@ store.setJson("k", { v: 1 }); store.getJson("k");
 ## Deployment model
 
 In production, run sandboxes as private components and reach them through Spin service
-chaining or the [`@spinframework/sandbox`](sdk) client library. The
+chaining or the [`@spinframework/spin-code-sandbox`](sdk) client library. The
 [AI code executor](examples/ai-code-executor) shows the complete wiring.
 
 Sandbox endpoints do not authenticate callers: any component allowed to reach a private route can choose an ID and policy. Grant access only to trusted callers, or authenticate public routes. The application must map requests to sandbox IDs and set `allowedHosts` and `kvEnabled` itself; never accept these from model output or unchecked users.

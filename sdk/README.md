@@ -1,4 +1,4 @@
-# @spinframework/sandbox
+# @spinframework/spin-code-sandbox
 
 An extensible TypeScript client for sandboxed code execution, consumed from a Spin application. It ships one backend today, the Wasm code interpreter (this repo's `ts-sandbox` / `py-sandbox` components), and is built so another backend can be added later without changing the portable surface.
 
@@ -7,8 +7,8 @@ An extensible TypeScript client for sandboxed code execution, consumed from a Sp
 Author a tool against the `CodeRunner` interface and it runs unchanged on any backend; the host injects the concrete client at the edge.
 
 ```ts
-import type { CodeRunner } from "@spinframework/sandbox/core";
-import { Interpreter } from "@spinframework/sandbox/interpreter";
+import type { CodeRunner } from "@spinframework/spin-code-sandbox/core";
+import { Interpreter } from "@spinframework/spin-code-sandbox/interpreter";
 
 // A tool depends only on the interface, so the backend can be swapped without touching it.
 async function compute(runner: CodeRunner, code: string) {
@@ -25,11 +25,11 @@ console.log(await compute(runner, "print(6 * 7)"));
 
 ## Agent tools
 
-`interpreterTool()` gives an agent a ready-to-run `run_in_wasm_interpreter` tool. Pass it your `Interpreter` clients (one per language; the tool offers exactly those languages) and your execution policy. It validates the model's arguments against a strict [Zod](https://zod.dev) schema, runs the code, and formats the output for the model. Zod is a peer dependency: install `zod@^4` in apps that import `@spinframework/sandbox/tools`.
+`interpreterTool()` gives an agent a ready-to-run `run_in_wasm_interpreter` tool. Pass it your `Interpreter` clients (one per language; the tool offers exactly those languages) and your execution policy. It validates the model's arguments against a strict [Zod](https://zod.dev) schema, runs the code, and formats the output for the model. Zod is a peer dependency: install `zod@^4` in apps that import `@spinframework/spin-code-sandbox/tools`.
 
 ```ts
-import { Interpreter } from "@spinframework/sandbox/interpreter";
-import { interpreterTool } from "@spinframework/sandbox/tools";
+import { Interpreter } from "@spinframework/spin-code-sandbox/interpreter";
+import { interpreterTool } from "@spinframework/spin-code-sandbox/tools";
 
 const sandbox = interpreterTool({
   interpreters: {

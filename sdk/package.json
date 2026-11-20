@@ -1,5 +1,5 @@
 {
-  "name": "@spinframework/sandbox",
+  "name": "@spinframework/spin-code-sandbox",
   "version": "0.1.0",
   "description": "An extensible client for sandboxed code execution from a Spin application. Ships a Wasm code-interpreter backend; extensible to other backends.",
   "type": "module",

@@ -1,4 +1,4 @@
-// @spinframework/sandbox/interpreter, the Wasm code interpreter backend.
+// @spinframework/spin-code-sandbox/interpreter, the Wasm code interpreter backend.
 //
 // A thin client over a sandbox component's `POST /ts/run` (JS/TS) and `/py/run`
 // (Python) routes. `core.run()` is intentionally single-shot and buffered. HTTP handler
@@ -28,7 +28,7 @@ import type { Caps, CodeRunner, HttpInput, Language, PackageJson, Result, RunOpt
 import { langToRoute, withDefaults } from "../core/index.ts";
 
 // Re-exported so a consumer can name run languages (and import `Interpreter`)
-// from this one module, without also reaching into `@spinframework/sandbox/core`.
+// from this one module, without also reaching into `@spinframework/spin-code-sandbox/core`.
 export type { Language } from "../core/index.ts";
 
 /** A fetch implementation; defaults to the Spin guest's global `fetch`. */
@@ -123,7 +123,7 @@ export class Interpreter implements CodeRunner {
   /**
    * Bundle npm dependencies into `code` WITHOUT running it, returning the self-contained
    * bundle. JavaScript only; requires a `bundlerUrl`. Use it to pre-bundle code you will
-   * store and run later (see @spinframework/sandbox/store), so it is bundled once at publish
+   * store and run later (see @spinframework/spin-code-sandbox/store), so it is bundled once at publish
    * rather than on every request.
    */
   async bundle(code: string, packageJson: PackageJson): Promise<string> {

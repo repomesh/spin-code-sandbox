@@ -1,7 +1,7 @@
 // AI Code Executor API, an LLM agent whose tool is a sandbox.
 //
 // The model is given one tool: it runs code in the fast Wasm interpreter. The
-// model writes the code, we execute it through @spinframework/sandbox and feed
+// model writes the code, we execute it through @spinframework/spin-code-sandbox and feed
 // the result back. The full transcript (reasoning + each tool call + output +
 // answer) is streamed to the UI. The LLM provider (Anthropic or OpenAI) is chosen
 // at build time; see build.mjs.
@@ -13,8 +13,8 @@ import type { Context } from "hono";
 import * as variables from "@spinframework/spin-variables";
 import { createProvider } from "#llm-provider";
 
-import { Interpreter } from "@spinframework/sandbox/interpreter";
-import { interpreterTool, toToolDefinition, type ExecutionPolicy } from "@spinframework/sandbox/tools";
+import { Interpreter } from "@spinframework/spin-code-sandbox/interpreter";
+import { interpreterTool, toToolDefinition, type ExecutionPolicy } from "@spinframework/spin-code-sandbox/tools";
 import { historyFor, type History, type ToolResult } from "./llm/types";
 import { log, initLogger } from "./logger";
 

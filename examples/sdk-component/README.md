@@ -1,6 +1,6 @@
 # SDK Component
 
-A minimal Spin application that uses [`@spinframework/sandbox`](../../sdk) from a
+A minimal Spin application that uses [`@spinframework/spin-code-sandbox`](../../sdk) from a
 public Wasm HTTP component. The TypeScript and Python interpreters are private Spin
 components, reached only through service chaining.
 

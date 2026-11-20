@@ -3,7 +3,7 @@ spin_manifest_version = 2
 [application]
 name = "sandbox-sdk-component"
 version = "0.1.0"
-description = "Minimal Spin component using @spinframework/sandbox through private interpreter components."
+description = "Minimal Spin component using @spinframework/spin-code-sandbox through private interpreter components."
 
 [[trigger.http]]
 route = "/..."
