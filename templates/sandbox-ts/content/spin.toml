@@ -17,7 +17,7 @@ esm_base_url = { default = "https://esm.sh" }
 # This app scaffolds two PRIVATE building blocks: a JS/TS code sandbox and its dependency
 # bundler. Both are private (no public route) and reachable only via service chaining from
 # another component in this app. Add your own component that drives them through
-# @spinframework/sandbox (see examples/ai-code-executor), or `spin add -t sandbox-ts`
+# @spinframework/spin-code-sandbox (see examples/ai-code-executor), or `spin add -t sandbox-ts`
 # this pair into an existing app instead. The Interpreter wiring:
 #
 #   const js = new Interpreter({

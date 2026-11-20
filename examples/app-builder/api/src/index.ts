@@ -1,5 +1,5 @@
 // App Builder API: an LLM generates a self-contained HTTP-handler web app; we store it via
-// @spinframework/sandbox and serve each stored app live at its own URL. The LLM provider
+// @spinframework/spin-code-sandbox and serve each stored app live at its own URL. The LLM provider
 // (Anthropic or OpenAI) is chosen at build time; see build.mjs.
 //
 // Two surfaces on one component:
@@ -21,10 +21,10 @@ import type { Context } from "hono";
 import * as variables from "@spinframework/spin-variables";
 import { createProvider } from "#llm-provider";
 
-import { Interpreter, type Language } from "@spinframework/sandbox/interpreter";
-import { KvCodeStore, serveStoredCode } from "@spinframework/sandbox/store";
-import type { RunOpts } from "@spinframework/sandbox/core";
-import type { ToolDefinition } from "@spinframework/sandbox/tools";
+import { Interpreter, type Language } from "@spinframework/spin-code-sandbox/interpreter";
+import { KvCodeStore, serveStoredCode } from "@spinframework/spin-code-sandbox/store";
+import type { RunOpts } from "@spinframework/spin-code-sandbox/core";
+import type { ToolDefinition } from "@spinframework/spin-code-sandbox/tools";
 import { historyFor, type History, type ToolResult } from "./llm/types";
 import { log, initLogger } from "./logger";
 

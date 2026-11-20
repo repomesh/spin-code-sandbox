@@ -2,7 +2,7 @@
 
 A Spin application: an LLM (via the Anthropic Messages API by default, or the OpenAI Chat Completions API) writes a
 self-contained web app (an HTTP handler serving an
-HTML UI plus a JSON API), stores the code with [`@spinframework/sandbox`](../../sdk),
+HTML UI plus a JSON API), stores the code with [`@spinframework/spin-code-sandbox`](../../sdk),
 and serves each stored app live at its own URL, executed on demand in a private Wasm
 sandbox. Click any app to keep editing it by chatting; each change updates it in place
 at the same URL.
@@ -156,7 +156,7 @@ Before deploying:
 ```
 spin.toml          5 components: public ui + api (two triggers), private ts-sandbox + py-sandbox + bundler
 api/               Hono component: the LLM loop, the code store, and the live-serve routes
-  src/index.ts     imports @spinframework/sandbox/{interpreter,store}
+  src/index.ts     imports @spinframework/spin-code-sandbox/{interpreter,store}
   src/llm/         provider interface + Anthropic and OpenAI implementations (one bundled per build)
 ui/                Nuxt SPA: build gallery + create flow
   pages/index.vue  the gallery + "describe an app" UI

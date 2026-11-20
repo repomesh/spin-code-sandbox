@@ -1,4 +1,4 @@
-// @spinframework/sandbox/store, persist AI-generated code and run it later by id.
+// @spinframework/spin-code-sandbox/store, persist AI-generated code and run it later by id.
 //
 // KvCodeStore is the one CodeStore implementation today: it keeps code in the sandbox's
 // scoped KV (via InterpreterKV). serveStoredCode composes a store with interpreters to run

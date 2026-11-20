@@ -19,10 +19,10 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.69.0",
-    "@spinframework/sandbox": "file:../../../sdk",
+    "@spinframework/spin-code-sandbox": "file:../../../sdk",
     "@spinframework/spin-variables": "^1.0.1",
     "@spinframework/wasi-http-proxy": "^2.0.0",
-    "hono": "^4.7.4",
+    "hono": "^4.13.19",
     "openai": "^7.30.0"
   },
   "overrides": {

@@ -2,9 +2,9 @@
 # PRIVATE (service-chained), so neither is publicly routable: the sandbox runs untrusted
 # code, and the bundler (experimental) fetches arbitrary npm from esm.sh. Keeping them
 # separate isolates the "fetch npm" capability from the "run untrusted code" capability.
-# Reach them from your own component through @spinframework/sandbox:
+# Reach them from your own component through @spinframework/spin-code-sandbox:
 #
-#   import { Interpreter } from "@spinframework/sandbox/interpreter";
+#   import { Interpreter } from "@spinframework/spin-code-sandbox/interpreter";
 #   const js = new Interpreter({
 #     baseUrl:    "http://{{project-name | kebab_case}}.spin.internal",
 #     bundlerUrl: "http://{{project-name | kebab_case}}-bundler.spin.internal",

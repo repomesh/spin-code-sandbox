@@ -2,7 +2,7 @@
 // build (see build.mjs): `src/llm/anthropic.ts` by default, `src/llm/openai.ts` for the
 // `openai` Spin build profile.
 
-import type { ToolDefinition } from "@spinframework/sandbox/tools";
+import type { ToolDefinition } from "@spinframework/spin-code-sandbox/tools";
 
 export type ProviderName = "anthropic" | "openai";
 

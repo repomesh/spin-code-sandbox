@@ -1,8 +1,8 @@
 import { Hono } from "hono";
 import { fire } from "hono/service-worker";
 
-import { Interpreter, type Language } from "@spinframework/sandbox/interpreter";
-import type { HttpInput } from "@spinframework/sandbox/core";
+import { Interpreter, type Language } from "@spinframework/spin-code-sandbox/interpreter";
+import type { HttpInput } from "@spinframework/spin-code-sandbox/core";
 
 const interpreters: Record<Language, Interpreter> = {
   javascript: Interpreter.javascript({ baseUrl: "http://ts-sandbox.spin.internal" }),

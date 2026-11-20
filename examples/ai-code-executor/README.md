@@ -2,7 +2,7 @@
 
 A Spin application: an LLM (via the Anthropic Messages API by default, or the OpenAI Chat Completions API) writes
 code and runs it in the fast Wasm interpreter
-through [`@spinframework/sandbox`](../../sdk), with the transcript streamed
+through [`@spinframework/spin-code-sandbox`](../../sdk), with the transcript streamed
 back to a chat UI.
 
 ```
@@ -17,7 +17,7 @@ The two interpreters (`ts-sandbox`, `py-sandbox`) are private components of this
 (`route = { private = true }`), so they have no public route and are reachable only
 from the `api` component via local service chaining (`<component>.spin.internal`). A
 private `bundler` component (experimental) packages any extra npm dependencies the model requests. The
-API depends on the sandbox client from this repo ([`@spinframework/sandbox`](../../sdk),
+API depends on the sandbox client from this repo ([`@spinframework/spin-code-sandbox`](../../sdk),
 a local `file:` dependency) and holds one `Interpreter` per language, each pointed at
 its component's internal URL.
 
@@ -196,7 +196,7 @@ requests from other origins. Before deploying:
 ```
 spin.toml          wires 5 components: public ui + api, private ts-sandbox + py-sandbox + bundler
 api/               Hono component: the LLM tool-use loop + the interpreter tool
-  src/index.ts     the agent; imports @spinframework/sandbox; one Interpreter client per component
+  src/index.ts     the agent; imports @spinframework/spin-code-sandbox; one Interpreter client per component
   src/llm/         provider interface + Anthropic and OpenAI implementations (one bundled per build)
 ui/                Nuxt SPA chat (near-verbatim from upstream; one filesystem prompt swapped)
   pages/index.vue  the chat UI

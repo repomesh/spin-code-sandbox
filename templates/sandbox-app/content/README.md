@@ -7,7 +7,7 @@ A Spin application that scaffolds two **private** code sandboxes (JS/TS and Pyth
 | `ts-sandbox` | JavaScript / TS | `http://ts-sandbox.spin.internal`  |
 | `py-sandbox` | Python          | `http://py-sandbox.spin.internal`  |
 
-Neither has a public route, because they run untrusted code. Add your own component that calls them with `@spinframework/sandbox`, and add both hosts to its `allowed_outbound_hosts`:
+Neither has a public route, because they run untrusted code. Add your own component that calls them with `@spinframework/spin-code-sandbox`, and add both hosts to its `allowed_outbound_hosts`:
 
 ```ts
 const js = new Interpreter({ baseUrl: "http://ts-sandbox.spin.internal" });

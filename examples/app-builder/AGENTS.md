@@ -1,7 +1,7 @@
 # AGENTS.md: App Builder example
 
 A Spin app where an LLM generates a self-contained web app (one HTTP handler), stores
-the code via [`@spinframework/sandbox`](../../sdk), and serves each stored app live at
+the code via [`@spinframework/spin-code-sandbox`](../../sdk), and serves each stored app live at
 `/a/<id>/`. See [README.md](README.md) for the full picture; this covers the layout and
 the invariants.
 
@@ -12,7 +12,7 @@ Five components; only `ui` and `api` have public routes.
 - **`api/`**: a Hono component (TypeScript to Wasm via esbuild + `j2w`) bound to two
   HTTP triggers: `/api/...` (control plane) and `/a/...` (live apps). It runs the
   model loop (provider chosen at build time; see `src/llm/` and `build.mjs`), owns a
-  `KvCodeStore` (from `@spinframework/sandbox/store`), and serves
+  `KvCodeStore` (from `@spinframework/spin-code-sandbox/store`), and serves
   stored apps with `serveStoredCode` plus a presentation layer (`<base>` injection,
   crash page, hardening headers).
 - **`ui/`** (public `/...`): a Nuxt SPA served by the Spin static fileserver: a gallery
